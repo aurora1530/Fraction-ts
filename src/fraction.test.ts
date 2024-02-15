@@ -1,4 +1,4 @@
-import { Fraction, RepeatingDecimal } from './fraction';
+import { Fraction, RepeatingDecimal } from './index';
 
 describe('Fraction', () => {
   test('Fraction constructor test.give two numbers', () => {
