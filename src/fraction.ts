@@ -79,6 +79,14 @@ class Fraction {
    * because not integer number can't be reduced.
    */
   static reduce(fraction: Fraction): Fraction {
+    // topやbottomが整数でない場合でも、topとbottomのどちらかが最大公約数担っている場合は約分する
+    if (fraction.top % fraction.bottom === 0) {
+      return new Fraction(fraction.top / fraction.bottom, 1);
+    }
+    if (fraction.bottom % fraction.top === 0) {
+      return new Fraction(1, fraction.bottom / fraction.top);
+    }
+    // 上記の操作が無理で、かつtopやbottomが整数でない場合は、元のfractionを返す
     if (!Number.isInteger(fraction.top) || !Number.isInteger(fraction.bottom)) {
       return new Fraction(fraction.top, fraction.bottom);
     }
