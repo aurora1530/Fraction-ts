@@ -128,6 +128,10 @@ class Fraction {
     return left > right;
   }
 
+  greaterThanOrEquals(fraction: Fraction | number): boolean {
+    return this.equals(fraction) || this.greaterThan(fraction);
+  }
+
   /**
    * compare two fractions
    * if the fraction is a number, compare the value of the fraction
@@ -140,6 +144,10 @@ class Fraction {
     const left = this.top * this.sign * fraction.bottom;
     const right = fraction.top * fraction.sign * this.bottom;
     return left < right;
+  }
+
+  lessThanOrEquals(fraction: Fraction | number): boolean {
+    return this.equals(fraction) || this.lessThan(fraction);
   }
 
   /**
