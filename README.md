@@ -26,7 +26,6 @@ A class that represents a fraction. It supports operations such as addition, sub
   - like "1/2","1.23(456)"
   - If invalid string is passed, top and bottom are set to `NaN`
 - `constructor(top: number, bottom: number)`: Create a fraction using numerator and denominator.
-  - If decimal is passed, it is rounded off with `Math.round()`.
   - If 0 is passed as bottom, top and bottom are set to `NaN`
 
 ### Basic Usage

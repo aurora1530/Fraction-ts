@@ -35,8 +35,6 @@ class Fraction {
       this.top = fraction.top;
       this.bottom = fraction.bottom;
     } else if (typeof topOrStr === 'number' && typeof bottom === 'number') {
-      topOrStr = Math.round(topOrStr);
-      bottom = Math.round(bottom);
       if (bottom === 0) {
         [this.top, this.bottom, this.sign] = Fraction.#getNaN();
         return;
@@ -76,8 +74,14 @@ class Fraction {
   }
   /**
    * reduce the fraction and return a new fraction
+   *
+   * if top or bottom is not an integer, return the original fraction.
+   * because not integer number can't be reduced.
    */
   static reduce(fraction: Fraction): Fraction {
+    if (!Number.isInteger(fraction.top) || !Number.isInteger(fraction.bottom)) {
+      return new Fraction(fraction.top, fraction.bottom);
+    }
     const gcdVal = Fraction.GCD(fraction.top, fraction.bottom);
     return new Fraction(
       (fraction.sign * fraction.top) / gcdVal,
@@ -132,6 +136,10 @@ class Fraction {
    * finally, reduce the fraction
    */
   add(fraction: Fraction): Fraction {
+    if (this.bottom === fraction.bottom) {
+      const top = this.top * fraction.sign + fraction.top * this.sign;
+      return new Fraction(top, this.bottom).reduced();
+    }
     const top = this.top * fraction.bottom + fraction.top * this.bottom;
     const bottom = this.bottom * fraction.bottom;
     return new Fraction(top, bottom).reduced();
@@ -142,6 +150,10 @@ class Fraction {
    * finally, reduce the fraction
    */
   sub(fraction: Fraction): Fraction {
+    if (this.bottom === fraction.bottom) {
+      const top = this.top * fraction.sign - fraction.top * this.sign;
+      return new Fraction(top, this.bottom).reduced();
+    }
     const top = this.top * fraction.bottom - fraction.top * this.bottom;
     const bottom = this.bottom * fraction.bottom;
     return new Fraction(top, bottom).reduced();

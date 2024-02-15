@@ -13,18 +13,6 @@ describe('Fraction', () => {
     expect(fraction2.sign).toBe(-1);
   });
 
-  test('Fraction constructor round number when given number is not integer', () => {
-    const fraction = new Fraction(3.5, 5);
-    expect(fraction.top).toBe(4);
-    expect(fraction.bottom).toBe(5);
-    expect(fraction.sign).toBe(1);
-
-    const fraction2 = new Fraction(3, 5.5);
-    expect(fraction2.top).toBe(3);
-    expect(fraction2.bottom).toBe(6);
-    expect(fraction2.sign).toBe(1);
-  });
-
   test('Fraction constructor return NaN Faction when bottom is 0', () => {
     const fraction = new Fraction(3, 0);
     expect(fraction.top).toBeNaN();
@@ -115,5 +103,13 @@ describe('Fraction', () => {
     const fraction5 = new Fraction(1, 2);
     const fraction6 = 0.499999999999;
     expect(fraction5.lessThan(fraction6)).toBe(false);
+  });
+
+  test('can calculate if top or bottom is not integer', () => {
+    const fraction = new Fraction(3.5, 5);
+    expect(fraction.add(new Fraction(3.5, 5))).toStrictEqual(new Fraction(7, 5));
+
+    const fraction2 = new Fraction(3, 5.5);
+    expect(fraction2.add(new Fraction(3, 5.5))).toStrictEqual(new Fraction(6, 5.5));
   });
 });
