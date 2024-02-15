@@ -1,7 +1,7 @@
 type RepeatingDecimal = {
-  integer: number;
-  nonRepeating?: number;
-  repeating?: number;
+  integer: string;
+  nonRepeating?: string;
+  repeating?: string;
 };
 
 class Fraction {
@@ -68,10 +68,6 @@ class Fraction {
     return Fraction.GCD(b, a % b);
   }
 
-  static #getNumberLength(num: number): number {
-    const [_, digitStr] = num.toExponential().split('e');
-    return Number(digitStr) + 1;
-  }
   /**
    * reduce the fraction and return a new fraction
    *
@@ -211,36 +207,35 @@ class Fraction {
       /^(?<integer>[^.]+)(\.(?<nonRepeating>[^\(\).]+)?(\((?<repeating>[^\(\).]+)\))?)?$/;
     const match = text.trim().match(regex);
     if (!match?.groups) return undefined;
-    const {
-      integer: integerStr,
-      nonRepeating: nonRepeatingStr,
-      repeating: repeatingStr,
-    } = match.groups;
-    const integer = Number(integerStr);
-    const nonRepeating = nonRepeatingStr ? Number(nonRepeatingStr) : undefined;
-    const repeating = repeatingStr ? Number(repeatingStr) : undefined;
-    if ([integer, nonRepeating, repeating].some(Number.isNaN)) return undefined;
+    const { integer, nonRepeating, repeating } = match.groups;
+    if (
+      [integer, nonRepeating, repeating]
+        .filter((s) => s !== undefined)
+        .map(Number)
+        .some(Number.isNaN)
+    ) {
+      return undefined;
+    }
 
     return { integer, nonRepeating, repeating };
   }
 
   static fromRepeatingDecimal(repeatingDecimal: RepeatingDecimal): Fraction | undefined {
     const { integer, nonRepeating, repeating } = repeatingDecimal;
-    const integerFraction = new Fraction(integer, 1);
+    const integerFraction = new Fraction(Number(integer), 1);
 
-    const nonRepeatingLength = nonRepeating ? Fraction.#getNumberLength(nonRepeating) : 0;
+    const nonRepeatingLength = nonRepeating ? nonRepeating.length : 0;
     const nonRepeatingFraction = nonRepeating
-      ? new Fraction(nonRepeating, 10 ** nonRepeatingLength)
+      ? new Fraction(Number(nonRepeating), 10 ** nonRepeatingLength)
       : new Fraction(0, 1);
 
-    const repeatingLength = repeating ? Fraction.#getNumberLength(repeating) : 0;
+    const repeatingLength = repeating ? repeating.length : 0;
     const repeatingFraction = repeating
       ? new Fraction(
-          repeating,
+          Number(repeating),
           10 ** (repeatingLength + nonRepeatingLength) - 10 ** nonRepeatingLength
         )
       : new Fraction(0, 1);
-
     return integerFraction.add(nonRepeatingFraction).add(repeatingFraction);
   }
 }
