@@ -100,6 +100,11 @@ class Fraction {
     return this;
   }
 
+  /**
+   * compare two fractions.
+   * if the fraction is a number, compare the value of the fraction.
+   * if the fraction is a fraction, compare the reduced fraction.
+   */
   equals(fraction: Fraction | number): boolean {
     if (typeof fraction === 'number') {
       return this.reduced().value() === fraction;
@@ -113,6 +118,11 @@ class Fraction {
     );
   }
 
+  /**
+   * compare two fractions
+   * if the fraction is a number, compare the value of the fraction
+   * if the fraction is a fraction, compare the reduced fraction
+   */
   greaterThan(fraction: Fraction | number): boolean {
     if (typeof fraction === 'number') {
       return this.reduced().value() > fraction;
@@ -122,6 +132,11 @@ class Fraction {
     return left > right;
   }
 
+  /**
+   * compare two fractions
+   * if the fraction is a number, compare the value of the fraction
+   * if the fraction is a fraction, compare the reduced fraction
+   */
   lessThan(fraction: Fraction | number): boolean {
     if (typeof fraction === 'number') {
       return this.reduced().value() < fraction;
