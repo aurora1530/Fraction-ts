@@ -55,6 +55,10 @@ class Fraction {
     return (this.sign * this.top) / this.bottom;
   }
 
+  isInteger() {
+    return this.top % this.bottom === 0;
+  }
+
   static #getNaN(): [number, number, 1] {
     return [NaN, NaN, 1];
   }
