@@ -65,9 +65,9 @@ class Fraction {
     return Number.isNaN(fraction.top) || Number.isNaN(fraction.bottom);
   }
 
-  static #gcd(a: number, b: number): number {
+  static GCD(a: number, b: number): number {
     if (b === 0) return a;
-    return Fraction.#gcd(b, a % b);
+    return Fraction.GCD(b, a % b);
   }
 
   static #getNumberLength(num: number): number {
@@ -78,7 +78,7 @@ class Fraction {
    * reduce the fraction and return a new fraction
    */
   static reduce(fraction: Fraction): Fraction {
-    const gcdVal = Fraction.#gcd(fraction.top, fraction.bottom);
+    const gcdVal = Fraction.GCD(fraction.top, fraction.bottom);
     return new Fraction(
       (fraction.sign * fraction.top) / gcdVal,
       fraction.bottom / gcdVal
@@ -98,7 +98,7 @@ class Fraction {
 
   equals(fraction: Fraction | number): boolean {
     if (typeof fraction === 'number') {
-      return this.equals(new Fraction(fraction, 1));
+      return this.reduced().value() === fraction;
     }
     const reducedFracThis = Fraction.reduce(this);
     const reducedFrac = Fraction.reduce(fraction);
@@ -111,7 +111,7 @@ class Fraction {
 
   greaterThan(fraction: Fraction | number): boolean {
     if (typeof fraction === 'number') {
-      return this.greaterThan(new Fraction(fraction, 1));
+      return this.reduced().value() > fraction;
     }
     const left = this.top * this.sign * fraction.bottom;
     const right = fraction.top * fraction.sign * this.bottom;
@@ -120,7 +120,7 @@ class Fraction {
 
   lessThan(fraction: Fraction | number): boolean {
     if (typeof fraction === 'number') {
-      return this.lessThan(new Fraction(fraction, 1));
+      return this.reduced().value() < fraction;
     }
     const left = this.top * this.sign * fraction.bottom;
     const right = fraction.top * fraction.sign * this.bottom;
