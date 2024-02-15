@@ -111,16 +111,20 @@ class Fraction {
 
   greaterThan(fraction: Fraction | number): boolean {
     if (typeof fraction === 'number') {
-      return this.reduced().value() > fraction;
+      return this.greaterThan(new Fraction(fraction, 1));
     }
-    return this.reduced().value() > fraction.reduced().value();
+    const left = this.top * this.sign * fraction.bottom;
+    const right = fraction.top * fraction.sign * this.bottom;
+    return left > right;
   }
 
   lessThan(fraction: Fraction | number): boolean {
     if (typeof fraction === 'number') {
-      return this.reduced().value() < fraction;
+      return this.lessThan(new Fraction(fraction, 1));
     }
-    return this.reduced().value() < fraction.reduced().value();
+    const left = this.top * this.sign * fraction.bottom;
+    const right = fraction.top * fraction.sign * this.bottom;
+    return left < right;
   }
 
   /**
