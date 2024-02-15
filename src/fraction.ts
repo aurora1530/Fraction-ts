@@ -51,7 +51,7 @@ class Fraction {
     if (this.bottom === 1) return `${this.sign * this.top}`;
     return `${this.sign * this.top}/${this.bottom}`;
   }
-  value() {
+  toNumber() {
     return (this.sign * this.top) / this.bottom;
   }
 
@@ -103,7 +103,7 @@ class Fraction {
    */
   equals(fraction: Fraction | number): boolean {
     if (typeof fraction === 'number') {
-      return this.reduced().value() === fraction;
+      return this.reduced().toNumber() === fraction;
     }
     const reducedFracThis = Fraction.reduce(this);
     const reducedFrac = Fraction.reduce(fraction);
@@ -121,7 +121,7 @@ class Fraction {
    */
   greaterThan(fraction: Fraction | number): boolean {
     if (typeof fraction === 'number') {
-      return this.reduced().value() > fraction;
+      return this.reduced().toNumber() > fraction;
     }
     const left = this.top * this.sign * fraction.bottom;
     const right = fraction.top * fraction.sign * this.bottom;
@@ -139,7 +139,7 @@ class Fraction {
    */
   lessThan(fraction: Fraction | number): boolean {
     if (typeof fraction === 'number') {
-      return this.reduced().value() < fraction;
+      return this.reduced().toNumber() < fraction;
     }
     const left = this.top * this.sign * fraction.bottom;
     const right = fraction.top * fraction.sign * this.bottom;
