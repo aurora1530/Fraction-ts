@@ -1,0 +1,119 @@
+import { Fraction, RepeatingDecimal } from './fraction';
+
+describe('Fraction', () => {
+  test('Fraction constructor test.give two numbers', () => {
+    const fraction1 = new Fraction(3, 5);
+    expect(fraction1.top).toBe(3);
+    expect(fraction1.bottom).toBe(5);
+    expect(fraction1.sign).toBe(1);
+
+    const fraction2 = new Fraction(-3, 5);
+    expect(fraction2.top).toBe(3);
+    expect(fraction2.bottom).toBe(5);
+    expect(fraction2.sign).toBe(-1);
+  });
+
+  test('Fraction constructor round number when given number is not integer', () => {
+    const fraction = new Fraction(3.5, 5);
+    expect(fraction.top).toBe(4);
+    expect(fraction.bottom).toBe(5);
+    expect(fraction.sign).toBe(1);
+
+    const fraction2 = new Fraction(3, 5.5);
+    expect(fraction2.top).toBe(3);
+    expect(fraction2.bottom).toBe(6);
+    expect(fraction2.sign).toBe(1);
+  });
+
+  test('Fraction constructor return NaN Faction when bottom is 0', () => {
+    const fraction = new Fraction(3, 0);
+    expect(fraction.top).toBeNaN();
+    expect(fraction.bottom).toBeNaN();
+    expect(fraction.sign).toBe(1);
+  });
+
+  test('Fraction constructor test. give a fraction text like "3/5"', () => {
+    const fraction = new Fraction('3/5');
+    expect(fraction.top).toBe(3);
+    expect(fraction.bottom).toBe(5);
+    expect(fraction.sign).toBe(1);
+
+    const fraction2 = new Fraction('-3/5');
+    expect(fraction2.top).toBe(3);
+    expect(fraction2.bottom).toBe(5);
+    expect(fraction2.sign).toBe(-1);
+
+    const fraction3 = new Fraction('123/-5');
+    expect(fraction3.top).toBe(123);
+    expect(fraction3.bottom).toBe(5);
+    expect(fraction3.sign).toBe(-1);
+  });
+
+  test('Fraction constructor test.give a decimal like 12.34(567)', () => {
+    const fraction1 = new Fraction('0.(3)');
+    expect(fraction1.top).toBe(1);
+    expect(fraction1.bottom).toBe(3);
+    expect(fraction1.sign).toBe(1);
+
+    const fraction2 = new Fraction('0.(142857)');
+    expect(fraction2.top).toBe(1);
+    expect(fraction2.bottom).toBe(7);
+    expect(fraction2.sign).toBe(1);
+
+    const fraction3 = new Fraction('0.142857(142857)');
+    expect(fraction3.top).toBe(1);
+    expect(fraction3.bottom).toBe(7);
+    expect(fraction3.sign).toBe(1);
+
+    const fraction4 = new Fraction('1.2(0)');
+    expect(fraction4.top).toBe(6);
+    expect(fraction4.bottom).toBe(5);
+    expect(fraction4.sign).toBe(1);
+  });
+
+  test('one fraction equals another', () => {
+    const fraction1 = new Fraction(3, 5);
+    const fraction2 = new Fraction('3/5');
+    expect(fraction1.equals(fraction2)).toBe(true);
+
+    const fraction3 = new Fraction(3, 5);
+    const fraction4 = new Fraction(27, 45);
+    expect(fraction3.equals(fraction4)).toBe(true);
+
+    const fraction5 = new Fraction(3, 5);
+    const fraction6 = new Fraction(3, 6);
+    expect(fraction5.equals(fraction6)).toBe(false);
+  });
+
+  test('one fraction is greater than another', () => {
+    const fraction1 = new Fraction(3, 5);
+    const fraction2 = new Fraction(4, 5);
+    expect(fraction1.greaterThan(fraction2)).toBe(false);
+    expect(fraction2.greaterThan(fraction1)).toBe(true);
+
+    const fraction3 = new Fraction(3, 5);
+    const fraction4 = new Fraction(3, 6);
+    expect(fraction3.greaterThan(fraction4)).toBe(true);
+    expect(fraction4.greaterThan(fraction3)).toBe(false);
+
+    const fraction5 = new Fraction(1, 2);
+    const fraction6 = 0.499999999999;
+    expect(fraction5.greaterThan(fraction6)).toBe(true);
+  });
+
+  test('one fraction is less than another', () => {
+    const fraction1 = new Fraction(3, 5);
+    const fraction2 = new Fraction(4, 5);
+    expect(fraction1.lessThan(fraction2)).toBe(true);
+    expect(fraction2.lessThan(fraction1)).toBe(false);
+
+    const fraction3 = new Fraction(3, 5);
+    const fraction4 = new Fraction(3, 6);
+    expect(fraction3.lessThan(fraction4)).toBe(false);
+    expect(fraction4.lessThan(fraction3)).toBe(true);
+
+    const fraction5 = new Fraction(1, 2);
+    const fraction6 = 0.499999999999;
+    expect(fraction5.lessThan(fraction6)).toBe(false);
+  });
+});
