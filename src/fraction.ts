@@ -208,7 +208,7 @@ class Fraction {
   }
 
   static #isFractionText(text: string): boolean {
-    return /^\s*-?\s*\d+\s*\/\s*-?\s*\d+\s*$/.test(text);
+    return /^[^/]+\/[^/]+$$/.test(text);
   }
 
   static fromFractionText(text: string): Fraction | undefined {
