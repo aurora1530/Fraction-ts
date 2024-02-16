@@ -35,6 +35,16 @@ describe('Fraction', () => {
     expect(fraction3.top).toBe(123);
     expect(fraction3.bottom).toBe(5);
     expect(fraction3.sign).toBe(-1);
+
+    const fraction4 = new Fraction('1e2/1e7');
+    expect(fraction4.top).toBe(100);
+    expect(fraction4.bottom).toBe(10000000);
+    expect(fraction4.sign).toBe(1);
+
+    const fraction5 = new Fraction('1.2/2.4');
+    expect(fraction5.top).toBe(1.2);
+    expect(fraction5.bottom).toBe(2.4);
+    expect(fraction5.sign).toBe(1);
   });
 
   test('Fraction constructor test.give a decimal like 12.34(567)', () => {
@@ -57,6 +67,16 @@ describe('Fraction', () => {
     expect(fraction4.top).toBe(6);
     expect(fraction4.bottom).toBe(5);
     expect(fraction4.sign).toBe(1);
+
+    const fraction5 = new Fraction('-1.(3)');
+    expect(fraction5.top).toBe(4);
+    expect(fraction5.bottom).toBe(3);
+    expect(fraction5.sign).toBe(-1);
+
+    const fraction6 = new Fraction('  -1.125  ');
+    expect(fraction6.top).toBe(9);
+    expect(fraction6.bottom).toBe(8);
+    expect(fraction6.sign).toBe(-1);
   });
 
   test('one fraction equals another', () => {
