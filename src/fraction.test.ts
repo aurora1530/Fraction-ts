@@ -132,4 +132,12 @@ describe('Fraction', () => {
     const fraction2 = new Fraction(3, 5.5);
     expect(fraction2.add(new Fraction(3, 5.5))).toStrictEqual(new Fraction(6, 5.5));
   });
+
+  test('isReduced test', () => {
+    const fraction1 = new Fraction(1, 3);
+    expect(fraction1.isReduced()).toBe(true);
+
+    const fraction2 = new Fraction(3, 9);
+    expect(fraction2.isReduced()).toBe(false);
+  });
 });
