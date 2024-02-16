@@ -236,7 +236,7 @@ class Fraction {
     ) {
       return undefined;
     }
-    const sign = integer.startsWith('-') ? -1 : 1;
+    const sign = integer.trim().startsWith('-') ? -1 : 1;
     const replacedInt = integer.replace(/^-/, '');
     return { integer: replacedInt, nonRepeating, repeating, sign };
   }
