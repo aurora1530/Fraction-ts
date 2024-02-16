@@ -62,6 +62,18 @@ class Fraction {
     return this.top % this.bottom === 0;
   }
 
+  /**
+   * This cannot use the method of `equals` because it use the method of `reduce`.
+   */
+  isReduced() {
+    const reduced = Fraction.reduce(this);
+    return (
+      this.top === reduced.top &&
+      this.bottom === reduced.bottom &&
+      this.sign === reduced.sign
+    );
+  }
+
   static #getNaN(): [number, number, 1] {
     return [NaN, NaN, 1];
   }
