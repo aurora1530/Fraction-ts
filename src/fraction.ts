@@ -14,7 +14,7 @@ class Fraction {
     if (typeof topOrStr === 'string') {
       let fraction: Fraction | undefined;
       if (Fraction.#isFractionText(topOrStr)) {
-        fraction = Fraction.parseFractionText(topOrStr);
+        fraction = Fraction.fromFractionText(topOrStr);
         if (!fraction) {
           [this.top, this.bottom, this.sign] = Fraction.#getNaN();
           return;
@@ -79,7 +79,7 @@ class Fraction {
    * because not integer number can't be reduced.
    */
   static reduce(fraction: Fraction): Fraction {
-    // topやbottomが整数でない場合でも、topとbottomのどちらかが最大公約数担っている場合は約分する
+    // topやbottomが整数でない場合でも、topとbottomのどちらかが最大公約数の場合は約分する
     if (fraction.top % fraction.bottom === 0) {
       return new Fraction(fraction.top / fraction.bottom, 1);
     }
@@ -90,11 +90,8 @@ class Fraction {
     if (!Number.isInteger(fraction.top) || !Number.isInteger(fraction.bottom)) {
       return new Fraction(fraction.top, fraction.bottom);
     }
-    const gcdVal = Fraction.GCD(fraction.top, fraction.bottom);
-    return new Fraction(
-      (fraction.sign * fraction.top) / gcdVal,
-      fraction.bottom / gcdVal
-    );
+    const gcd = Fraction.GCD(fraction.top, fraction.bottom);
+    return new Fraction((fraction.sign * fraction.top) / gcd, fraction.bottom / gcd);
   }
 
   /**
@@ -214,7 +211,7 @@ class Fraction {
     return /^\s*-?\s*\d+\s*\/\s*-?\s*\d+\s*$/.test(text);
   }
 
-  static parseFractionText(text: string): Fraction | undefined {
+  static fromFractionText(text: string): Fraction | undefined {
     const [top, bottom] = text.split('/').map(Number);
     if ([top, bottom].some(Number.isNaN) || bottom === 0) {
       return undefined;
@@ -238,6 +235,10 @@ class Fraction {
     }
 
     return { integer, nonRepeating, repeating };
+  }
+
+  static getDecimalPart(num: number) {
+    return num - (num >= 0 ? Math.floor(num) : Math.ceil(num));
   }
 
   static fromRepeatingDecimal(repeatingDecimal: RepeatingDecimal): Fraction | undefined {
