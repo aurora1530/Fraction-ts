@@ -1,13 +1,16 @@
+type sign = -1 | 1;
+
 type RepeatingDecimal = {
   integer: string;
   nonRepeating?: string;
   repeating?: string;
+  sign: sign;
 };
 
 class Fraction {
   top: number;
   bottom: number;
-  sign: -1 | 1;
+  sign: sign;
   constructor(fractionString: string);
   constructor(top: number, bottom: number);
   constructor(topOrStr: number | string, bottom?: number) {
@@ -233,8 +236,9 @@ class Fraction {
     ) {
       return undefined;
     }
-
-    return { integer, nonRepeating, repeating };
+    const sign = integer.startsWith('-') ? -1 : 1;
+    const replacedInt = integer.replace(/^-/, '');
+    return { integer: replacedInt, nonRepeating, repeating, sign };
   }
 
   static getDecimalPart(num: number) {
@@ -242,7 +246,7 @@ class Fraction {
   }
 
   static fromRepeatingDecimal(repeatingDecimal: RepeatingDecimal): Fraction | undefined {
-    const { integer, nonRepeating, repeating } = repeatingDecimal;
+    const { integer, nonRepeating, repeating, sign } = repeatingDecimal;
     const integerFraction = new Fraction(Number(integer), 1);
 
     const nonRepeatingLength = nonRepeating ? nonRepeating.length : 0;
@@ -257,7 +261,11 @@ class Fraction {
           10 ** (repeatingLength + nonRepeatingLength) - 10 ** nonRepeatingLength
         )
       : new Fraction(0, 1);
-    return integerFraction.add(nonRepeatingFraction).add(repeatingFraction);
+    const returnFraction = integerFraction
+      .add(nonRepeatingFraction)
+      .add(repeatingFraction);
+    returnFraction.sign = sign;
+    return returnFraction;
   }
 }
 
