@@ -7,7 +7,10 @@
   ],
   "scripts": {
     "build": "tsc",
-    "prepare": "yarn build"
+    "prepare": "yarn build",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:watchAll": "jest --watchAll"
   },
   "license": "MIT",
   "devDependencies": {
