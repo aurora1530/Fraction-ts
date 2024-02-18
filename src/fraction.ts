@@ -196,13 +196,8 @@ class Fraction {
    * finally, reduce the fraction
    */
   sub(fraction: Fraction): Fraction {
-    if (this.bottom === fraction.bottom) {
-      const top = this.top * fraction.sign - fraction.top * this.sign;
-      return new Fraction(top, this.bottom).reduced();
-    }
-    const top = this.top * fraction.bottom - fraction.top * this.bottom;
-    const bottom = this.bottom * fraction.bottom;
-    return new Fraction(top, bottom).reduced();
+    const sign = -1 * fraction.sign;
+    return this.add(new Fraction(sign * fraction.top, fraction.bottom));
   }
 
   /**
@@ -220,9 +215,7 @@ class Fraction {
    * finally, reduce the fraction
    */
   div(fraction: Fraction): Fraction {
-    const top = this.top * fraction.bottom;
-    const bottom = this.bottom * fraction.top;
-    return new Fraction(top, bottom).reduced();
+    return this.mul(new Fraction(fraction.sign * fraction.bottom, fraction.top));
   }
 
   static #isFractionText(text: string): boolean {
