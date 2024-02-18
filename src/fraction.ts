@@ -82,6 +82,9 @@ class Fraction {
     return Number.isNaN(fraction.top) || Number.isNaN(fraction.bottom);
   }
 
+  /**
+   * use Euclidean algorithm to get the greatest common divisor
+   */
   static GCD(a: number, b: number): number {
     if (b === 0) return a;
     return Fraction.GCD(b, a % b);
