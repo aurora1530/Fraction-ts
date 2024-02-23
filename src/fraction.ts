@@ -2,24 +2,11 @@ type sign = -1 | 1;
 
 class RepeatingDecimal {
   private constructor(
-    private _sign: sign,
-    private _integer: string,
-    private _nonRepeating?: string,
-    private _repeating?: string
+    public readonly sign: sign,
+    public readonly integer: string,
+    public readonly nonRepeating?: string,
+    public readonly repeating?: string
   ) {}
-
-  get integer() {
-    return this._integer;
-  }
-  get nonRepeating() {
-    return this._nonRepeating;
-  }
-  get repeating() {
-    return this._repeating;
-  }
-  get sign() {
-    return this._sign;
-  }
 
   /**
    *
