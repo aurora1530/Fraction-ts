@@ -140,4 +140,22 @@ describe('Fraction', () => {
     const fraction2 = new Fraction(3, 9);
     expect(fraction2.isReduced()).toBe(false);
   });
+
+  test('calc method test', () => {
+    const frac1 = new Fraction(1, 3);
+    const frac2 = new Fraction(2, 3);
+    const frac3 = new Fraction(-1, 3);
+
+    expect(frac1.added(frac2)).toStrictEqual(new Fraction(1, 1));
+    expect(frac1.added(frac3)).toStrictEqual(new Fraction(0, 1));
+
+    expect(frac1.subtracted(frac2)).toStrictEqual(new Fraction(-1, 3));
+    expect(frac1.subtracted(frac3)).toStrictEqual(new Fraction(2, 3));
+
+    expect(frac1.multiplied(frac2)).toStrictEqual(new Fraction(2, 9));
+    expect(frac1.multiplied(frac3)).toStrictEqual(new Fraction(-1, 9));
+
+    expect(frac1.divided(frac2)).toStrictEqual(new Fraction(1, 2));
+    expect(frac1.divided(frac3)).toStrictEqual(new Fraction(-1, 1));
+  });
 });
