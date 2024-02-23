@@ -240,10 +240,6 @@ class Fraction {
     return new Fraction(top, bottom);
   }
 
-  private static _getDecimalPart(num: number) {
-    return num - (num >= 0 ? Math.floor(num) : Math.ceil(num));
-  }
-
   private static _fromRepeatingDecimal(repeatingDecimal: RepeatingDecimal): Fraction {
     const { integer, nonRepeating, repeating, sign } = repeatingDecimal;
     const integerFraction = new Fraction(Number(integer), 1);
