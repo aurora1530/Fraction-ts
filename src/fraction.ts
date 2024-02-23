@@ -1,65 +1,92 @@
 type sign = -1 | 1;
 
-type RepeatingDecimal = {
-  integer: string;
-  nonRepeating?: string;
-  repeating?: string;
-  sign: sign;
-};
+// type RepeatingDecimal = {
+//   integer: string;
+//   nonRepeating?: string;
+//   repeating?: string;
+//   sign: sign;
+// };
+
+class RepeatingDecimal {
+  private constructor(
+    private _sign: sign,
+    private _integer: string,
+    private _nonRepeating?: string,
+    private _repeating?: string
+  ) {}
+
+  get integer() {
+    return this._integer;
+  }
+  get nonRepeating() {
+    return this._nonRepeating;
+  }
+  get repeating() {
+    return this._repeating;
+  }
+  get sign() {
+    return this._sign;
+  }
+
+  /**
+   *
+   * @param decimalString - 1.23(456)
+   * @returns - if invalid string is given, return undefined.
+   */
+  public static fromString(decimalString: string): RepeatingDecimal | undefined {
+    const regex =
+      /^(?<integer>[^.]+)(\.(?<nonRepeating>[^\(\).]+)?(\((?<repeating>[^\(\).]+)\))?)?$/;
+    const match = decimalString.trim().match(regex);
+    if (!match?.groups) return undefined;
+    const { integer, nonRepeating, repeating } = match.groups;
+    if (
+      [integer, nonRepeating, repeating]
+        .filter((s) => s !== undefined)
+        .map(Number)
+        .some(Number.isNaN)
+    ) {
+      return undefined;
+    }
+    const sign = integer.trim().startsWith('-') ? -1 : 1;
+    const replacedInt = integer.replace(/^-/, '');
+    return new RepeatingDecimal(sign, replacedInt, nonRepeating, repeating);
+  }
+}
 
 class Fraction {
-  top: number;
-  bottom: number;
-  sign: sign;
-  constructor(fractionString: string);
-  constructor(top: number, bottom: number);
-  constructor(topOrStr: number | string, bottom?: number) {
-    if (typeof topOrStr === 'string') {
-      let fraction: Fraction | undefined;
-      if (Fraction.#isFractionText(topOrStr)) {
-        fraction = Fraction.fromFractionText(topOrStr);
-        if (!fraction) {
-          [this.top, this.bottom, this.sign] = Fraction.#getNaN();
-          return;
-        }
-      } else {
-        const repeatingDecimal = Fraction.parseRepeatingDecimal(topOrStr);
-        if (!repeatingDecimal) {
-          [this.top, this.bottom, this.sign] = Fraction.#getNaN();
-          return;
-        }
-        fraction = Fraction.fromRepeatingDecimal(repeatingDecimal);
-        if (!fraction) {
-          [this.top, this.bottom, this.sign] = Fraction.#getNaN();
-          return;
-        }
-      }
-      this.sign = fraction.sign;
-      this.top = fraction.top;
-      this.bottom = fraction.bottom;
-    } else if (typeof topOrStr === 'number' && typeof bottom === 'number') {
-      if (bottom === 0) {
-        [this.top, this.bottom, this.sign] = Fraction.#getNaN();
-        return;
-      }
-      this.sign = topOrStr * bottom >= 0 ? 1 : -1;
-      this.top = Math.abs(topOrStr);
-      this.bottom = Math.abs(bottom);
-    } else {
-      [this.top, this.bottom, this.sign] = Fraction.#getNaN();
+  private _top: number;
+  private _bottom: number;
+  private _sign: sign;
+  constructor(top: number, bottom: number) {
+    if (bottom === 0) {
+      [this._top, this._bottom, this._sign] = Fraction._getNaN();
+      return;
     }
+    this._sign = top * bottom >= 0 ? 1 : -1;
+    this._top = Math.abs(top);
+    this._bottom = Math.abs(bottom);
+  }
+
+  get top() {
+    return this._top;
+  }
+  get bottom() {
+    return this._bottom;
+  }
+  get sign() {
+    return this._sign;
   }
 
   toString() {
-    if (this.bottom === 1) return `${this.sign * this.top}`;
-    return `${this.sign * this.top}/${this.bottom}`;
+    if (this._bottom === 1) return `${this._sign * this._top}`;
+    return `${this._sign * this._top}/${this._bottom}`;
   }
   toNumber() {
-    return (this.sign * this.top) / this.bottom;
+    return (this._sign * this._top) / this._bottom;
   }
 
   isInteger() {
-    return this.top % this.bottom === 0;
+    return this._top % this._bottom === 0;
   }
 
   /**
@@ -68,18 +95,24 @@ class Fraction {
   isReduced() {
     const reduced = Fraction.reduce(this);
     return (
-      this.top === reduced.top &&
-      this.bottom === reduced.bottom &&
-      this.sign === reduced.sign
+      this._top === reduced._top &&
+      this._bottom === reduced._bottom &&
+      this._sign === reduced._sign
     );
   }
 
-  static #getNaN(): [number, number, 1] {
+  private static _getNaN(): [number, number, 1] {
     return [NaN, NaN, 1];
   }
 
+  private static _getNaNFraction(): Fraction {
+    const fraction = new Fraction(0, 0);
+    [fraction._top, fraction._bottom, fraction._sign] = Fraction._getNaN();
+    return fraction;
+  }
+
   static isNaN(fraction: Fraction) {
-    return Number.isNaN(fraction.top) || Number.isNaN(fraction.bottom);
+    return Number.isNaN(fraction._top) || Number.isNaN(fraction._bottom);
   }
 
   /**
@@ -98,29 +131,25 @@ class Fraction {
    */
   static reduce(fraction: Fraction): Fraction {
     // topやbottomが整数でない場合でも、topとbottomのどちらかが最大公約数の場合は約分する
-    if (fraction.top % fraction.bottom === 0) {
-      return new Fraction(fraction.top / fraction.bottom, 1);
+    if (fraction._top % fraction._bottom === 0) {
+      return new Fraction(fraction._top / fraction._bottom, 1);
     }
-    if (fraction.bottom % fraction.top === 0) {
-      return new Fraction(1, fraction.bottom / fraction.top);
+    if (fraction._bottom % fraction._top === 0) {
+      return new Fraction(1, fraction._bottom / fraction._top);
     }
     // 上記の操作が無理で、かつtopやbottomが整数でない場合は、元のfractionを返す
-    if (!Number.isInteger(fraction.top) || !Number.isInteger(fraction.bottom)) {
-      return new Fraction(fraction.top, fraction.bottom);
+    if (!Number.isInteger(fraction._top) || !Number.isInteger(fraction._bottom)) {
+      return new Fraction(fraction._top, fraction._bottom);
     }
-    const gcd = Fraction.GCD(fraction.top, fraction.bottom);
-    return new Fraction((fraction.sign * fraction.top) / gcd, fraction.bottom / gcd);
+    const gcd = Fraction.GCD(fraction._top, fraction._bottom);
+    return new Fraction((fraction._sign * fraction._top) / gcd, fraction._bottom / gcd);
   }
 
   /**
    * reduce the fraction
    */
-  reduced(): this {
-    const reducedFrac = Fraction.reduce(this);
-    this.top = reducedFrac.top;
-    this.bottom = reducedFrac.bottom;
-    this.sign = reducedFrac.sign;
-    return this;
+  reduced(): Fraction {
+    return Fraction.reduce(this);
   }
 
   /**
@@ -135,9 +164,9 @@ class Fraction {
     const reducedFracThis = Fraction.reduce(this);
     const reducedFrac = Fraction.reduce(fraction);
     return (
-      reducedFracThis.top === reducedFrac.top &&
-      reducedFracThis.bottom === reducedFrac.bottom &&
-      reducedFracThis.sign === reducedFrac.sign
+      reducedFracThis._top === reducedFrac._top &&
+      reducedFracThis._bottom === reducedFrac._bottom &&
+      reducedFracThis._sign === reducedFrac._sign
     );
   }
 
@@ -150,8 +179,8 @@ class Fraction {
     if (typeof fraction === 'number') {
       return this.reduced().toNumber() > fraction;
     }
-    const left = this.top * this.sign * fraction.bottom;
-    const right = fraction.top * fraction.sign * this.bottom;
+    const left = this._top * this._sign * fraction._bottom;
+    const right = fraction._top * fraction._sign * this._bottom;
     return left > right;
   }
 
@@ -168,8 +197,8 @@ class Fraction {
     if (typeof fraction === 'number') {
       return this.reduced().toNumber() < fraction;
     }
-    const left = this.top * this.sign * fraction.bottom;
-    const right = fraction.top * fraction.sign * this.bottom;
+    const left = this._top * this._sign * fraction._bottom;
+    const right = fraction._top * fraction._sign * this._bottom;
     return left < right;
   }
 
@@ -181,32 +210,28 @@ class Fraction {
    * add two fractions and return a new fraction.
    * finally, reduce the fraction
    */
-  add(fraction: Fraction): Fraction {
-    if (this.bottom === fraction.bottom) {
-      const top = this.top * fraction.sign + fraction.top * this.sign;
-      return new Fraction(top, this.bottom).reduced();
+  added(fraction: Fraction): Fraction {
+    if (this._bottom === fraction._bottom) {
+      const top = this._top * fraction._sign + fraction._top * this._sign;
+      return new Fraction(top, this._bottom).reduced();
     }
-    const top = this.top * fraction.bottom + fraction.top * this.bottom;
-    const bottom = this.bottom * fraction.bottom;
+    const top = this._top * fraction._bottom + fraction._top * this._bottom;
+    const bottom = this._bottom * fraction._bottom;
     return new Fraction(top, bottom).reduced();
   }
 
-  /**
-   * subtract two fractions and return a new fraction
-   * finally, reduce the fraction
-   */
-  sub(fraction: Fraction): Fraction {
-    const sign = -1 * fraction.sign;
-    return this.add(new Fraction(sign * fraction.top, fraction.bottom));
+  subtracted(fraction: Fraction): Fraction {
+    const sign = -1 * fraction._sign;
+    return this.added(new Fraction(sign * fraction._top, fraction._bottom));
   }
 
   /**
    * multiply two fractions and return a new fraction
    * finally, reduce the fraction
    */
-  mul(fraction: Fraction): Fraction {
-    const top = this.top * fraction.top;
-    const bottom = this.bottom * fraction.bottom;
+  multiplied(fraction: Fraction): Fraction {
+    const top = this._top * fraction._top;
+    const bottom = this._bottom * fraction._bottom;
     return new Fraction(top, bottom).reduced();
   }
 
@@ -214,46 +239,45 @@ class Fraction {
    * divide two fractions and return a new fraction
    * finally, reduce the fraction
    */
-  div(fraction: Fraction): Fraction {
-    return this.mul(new Fraction(fraction.sign * fraction.bottom, fraction.top));
+  divided(fraction: Fraction): Fraction {
+    return this.multiplied(
+      new Fraction(fraction._sign * fraction._bottom, fraction._top)
+    );
   }
 
-  static #isFractionText(text: string): boolean {
+  private static _isFractionText(text: string): boolean {
     return /^[^/]+\/[^/]+$$/.test(text);
   }
 
-  static fromFractionText(text: string): Fraction | undefined {
+  static fromNumber(top: number, bottom: number = 1) {
+    return new Fraction(top, bottom);
+  }
+
+  static fromString(fractionStr: string): Fraction {
+    if (Fraction._isFractionText(fractionStr)) {
+      return Fraction._fromFractionText(fractionStr);
+    }
+    const repeatingDecimal = RepeatingDecimal.fromString(fractionStr);
+    if (repeatingDecimal) {
+      return Fraction._fromRepeatingDecimal(repeatingDecimal);
+    }
+
+    return Fraction._getNaNFraction();
+  }
+
+  private static _fromFractionText(text: string): Fraction {
     const [top, bottom] = text.split('/').map(Number);
     if ([top, bottom].some(Number.isNaN) || bottom === 0) {
-      return undefined;
+      return Fraction._getNaNFraction();
     }
     return new Fraction(top, bottom);
   }
 
-  static parseRepeatingDecimal(text: string): RepeatingDecimal | undefined {
-    const regex =
-      /^(?<integer>[^.]+)(\.(?<nonRepeating>[^\(\).]+)?(\((?<repeating>[^\(\).]+)\))?)?$/;
-    const match = text.trim().match(regex);
-    if (!match?.groups) return undefined;
-    const { integer, nonRepeating, repeating } = match.groups;
-    if (
-      [integer, nonRepeating, repeating]
-        .filter((s) => s !== undefined)
-        .map(Number)
-        .some(Number.isNaN)
-    ) {
-      return undefined;
-    }
-    const sign = integer.trim().startsWith('-') ? -1 : 1;
-    const replacedInt = integer.replace(/^-/, '');
-    return { integer: replacedInt, nonRepeating, repeating, sign };
-  }
-
-  static getDecimalPart(num: number) {
+  private static _getDecimalPart(num: number) {
     return num - (num >= 0 ? Math.floor(num) : Math.ceil(num));
   }
 
-  static fromRepeatingDecimal(repeatingDecimal: RepeatingDecimal): Fraction | undefined {
+  private static _fromRepeatingDecimal(repeatingDecimal: RepeatingDecimal): Fraction {
     const { integer, nonRepeating, repeating, sign } = repeatingDecimal;
     const integerFraction = new Fraction(Number(integer), 1);
 
@@ -270,9 +294,9 @@ class Fraction {
         )
       : new Fraction(0, 1);
     const returnFraction = integerFraction
-      .add(nonRepeatingFraction)
-      .add(repeatingFraction);
-    returnFraction.sign = sign;
+      .added(nonRepeatingFraction)
+      .added(repeatingFraction);
+    returnFraction._sign = sign;
     return returnFraction;
   }
 }

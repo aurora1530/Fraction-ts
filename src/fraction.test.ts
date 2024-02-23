@@ -21,59 +21,59 @@ describe('Fraction', () => {
   });
 
   test('Fraction constructor test. give a fraction text like "3/5"', () => {
-    const fraction = new Fraction('3/5');
+    const fraction = Fraction.fromString('3/5');
     expect(fraction.top).toBe(3);
     expect(fraction.bottom).toBe(5);
     expect(fraction.sign).toBe(1);
 
-    const fraction2 = new Fraction('-3/5');
+    const fraction2 = Fraction.fromString('-3/5');
     expect(fraction2.top).toBe(3);
     expect(fraction2.bottom).toBe(5);
     expect(fraction2.sign).toBe(-1);
 
-    const fraction3 = new Fraction('123/-5');
+    const fraction3 = Fraction.fromString('123/-5');
     expect(fraction3.top).toBe(123);
     expect(fraction3.bottom).toBe(5);
     expect(fraction3.sign).toBe(-1);
 
-    const fraction4 = new Fraction('1e2/1e7');
+    const fraction4 = Fraction.fromString('1e2/1e7');
     expect(fraction4.top).toBe(100);
     expect(fraction4.bottom).toBe(10000000);
     expect(fraction4.sign).toBe(1);
 
-    const fraction5 = new Fraction('1.2/2.4');
+    const fraction5 = Fraction.fromString('1.2/2.4');
     expect(fraction5.top).toBe(1.2);
     expect(fraction5.bottom).toBe(2.4);
     expect(fraction5.sign).toBe(1);
   });
 
   test('Fraction constructor test.give a decimal like 12.34(567)', () => {
-    const fraction1 = new Fraction('0.(3)');
+    const fraction1 = Fraction.fromString('0.(3)');
     expect(fraction1.top).toBe(1);
     expect(fraction1.bottom).toBe(3);
     expect(fraction1.sign).toBe(1);
 
-    const fraction2 = new Fraction('0.(142857)');
+    const fraction2 = Fraction.fromString('0.(142857)');
     expect(fraction2.top).toBe(1);
     expect(fraction2.bottom).toBe(7);
     expect(fraction2.sign).toBe(1);
 
-    const fraction3 = new Fraction('0.142857(142857)');
+    const fraction3 = Fraction.fromString('0.142857(142857)');
     expect(fraction3.top).toBe(1);
     expect(fraction3.bottom).toBe(7);
     expect(fraction3.sign).toBe(1);
 
-    const fraction4 = new Fraction('1.2(0)');
+    const fraction4 = Fraction.fromString('1.2(0)');
     expect(fraction4.top).toBe(6);
     expect(fraction4.bottom).toBe(5);
     expect(fraction4.sign).toBe(1);
 
-    const fraction5 = new Fraction('-1.(3)');
+    const fraction5 = Fraction.fromString('-1.(3)');
     expect(fraction5.top).toBe(4);
     expect(fraction5.bottom).toBe(3);
     expect(fraction5.sign).toBe(-1);
 
-    const fraction6 = new Fraction('  -1.125  ');
+    const fraction6 = Fraction.fromString('  -1.125  ');
     expect(fraction6.top).toBe(9);
     expect(fraction6.bottom).toBe(8);
     expect(fraction6.sign).toBe(-1);
@@ -81,7 +81,7 @@ describe('Fraction', () => {
 
   test('one fraction equals another', () => {
     const fraction1 = new Fraction(3, 5);
-    const fraction2 = new Fraction('3/5');
+    const fraction2 = Fraction.fromString('3/5');
     expect(fraction1.equals(fraction2)).toBe(true);
 
     const fraction3 = new Fraction(3, 5);
@@ -127,10 +127,10 @@ describe('Fraction', () => {
 
   test('can calculate if top or bottom is not integer', () => {
     const fraction = new Fraction(3.5, 5);
-    expect(fraction.add(new Fraction(3.5, 5))).toStrictEqual(new Fraction(7, 5));
+    expect(fraction.added(new Fraction(3.5, 5))).toStrictEqual(new Fraction(7, 5));
 
     const fraction2 = new Fraction(3, 5.5);
-    expect(fraction2.add(new Fraction(3, 5.5))).toStrictEqual(new Fraction(6, 5.5));
+    expect(fraction2.added(new Fraction(3, 5.5))).toStrictEqual(new Fraction(6, 5.5));
   });
 
   test('isReduced test', () => {
