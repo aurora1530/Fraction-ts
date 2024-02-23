@@ -101,14 +101,14 @@ class Fraction {
   static reduce(fraction: Fraction): Fraction {
     // topやbottomが整数でない場合でも、topとbottomのどちらかが最大公約数の場合は約分する
     if (fraction.top % fraction.bottom === 0) {
-      return new Fraction(fraction.top / fraction.bottom, 1);
+      return new Fraction((fraction.sign * fraction.top) / fraction.bottom, 1);
     }
     if (fraction.bottom % fraction.top === 0) {
-      return new Fraction(1, fraction.bottom / fraction.top);
+      return new Fraction(fraction.sign * 1, fraction.bottom / fraction.top);
     }
     // 上記の操作が無理で、かつtopやbottomが整数でない場合は、元のfractionを返す
     if (!Number.isInteger(fraction.top) || !Number.isInteger(fraction.bottom)) {
-      return new Fraction(fraction.top, fraction.bottom);
+      return new Fraction(fraction.sign * fraction.top, fraction.bottom);
     }
     const gcd = Fraction.GCD(fraction.top, fraction.bottom);
     return new Fraction((fraction.sign * fraction.top) / gcd, fraction.bottom / gcd);
@@ -181,11 +181,11 @@ class Fraction {
    */
   added(fraction: Fraction): Fraction {
     if (this.bottom === fraction.bottom) {
-      const top = this.top * fraction.sign + fraction.top * this.sign;
+      const top = this.top * this.sign + fraction.top * fraction.sign;
       return new Fraction(top, this.bottom).reduced();
     }
     const top =
-      this.top * fraction.bottom * this.sign + fraction.top * this.bottom * fraction.sign;
+      this.top * this.sign * fraction.bottom + fraction.top * fraction.sign * this.bottom;
     const bottom = this.bottom * fraction.bottom;
     return new Fraction(top, bottom).reduced();
   }
