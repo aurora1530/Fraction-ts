@@ -1,12 +1,5 @@
 type sign = -1 | 1;
 
-// type RepeatingDecimal = {
-//   integer: string;
-//   nonRepeating?: string;
-//   repeating?: string;
-//   sign: sign;
-// };
-
 class RepeatingDecimal {
   private constructor(
     private _sign: sign,
