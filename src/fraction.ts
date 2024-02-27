@@ -60,16 +60,9 @@ class Fraction {
     return this.top % this.bottom === 0;
   }
 
-  /**
-   * This cannot use the method of `equals` because it use the method of `reduce`.
-   */
   isReduced() {
     const reduced = Fraction.reduce(this);
-    return (
-      this.top === reduced.top &&
-      this.bottom === reduced.bottom &&
-      this.sign === reduced.sign
-    );
+    return this.strictEquals(reduced);
   }
 
   private static _getNaN(): [number, number, 1] {
@@ -122,7 +115,20 @@ class Fraction {
   }
 
   /**
-   * compare two fractions.
+   * compare two fractions strictly. This function doesn't reduce the fraction.
+   * if the fraction is a number, compare the value of the fraction
+   * if the fraction is a fraction, compare the reduced fraction
+   */
+  strictEquals(fraction: Fraction): boolean {
+    return (
+      this.top === fraction.top &&
+      this.bottom === fraction.bottom &&
+      this.sign === fraction.sign
+    );
+  }
+
+  /**
+   * compare two fractions. This function reduces the fractions before comparing.
    * if the fraction is a number, compare the value of the fraction.
    * if the fraction is a fraction, compare the reduced fraction.
    */
@@ -132,11 +138,7 @@ class Fraction {
     }
     const reducedFracThis = Fraction.reduce(this);
     const reducedFrac = Fraction.reduce(fraction);
-    return (
-      reducedFracThis.top === reducedFrac.top &&
-      reducedFracThis.bottom === reducedFrac.bottom &&
-      reducedFracThis.sign === reducedFrac.sign
-    );
+    return reducedFracThis.strictEquals(reducedFrac);
   }
 
   /**
