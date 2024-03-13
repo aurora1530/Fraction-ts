@@ -1,5 +1,4 @@
-type sign = -1 | 1;
-
+import { sign } from 'type';
 class RepeatingDecimal {
   // 特にnonRepeatingやrepeatingについて、stringにしないと先頭に0があったときに桁数が変わってしまうため、stringで保持する
   private constructor(
